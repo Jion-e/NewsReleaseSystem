@@ -3,24 +3,36 @@
   <h2 class="newsTitle">新闻列表</h2>
 
   <el-form :inline="true" :model="searchData" @submit.prevent="searchNews" class="demo-form-inline">
+
     <el-form-item>
       <el-input v-model="searchData.text" placeholder="请输入关键字"></el-input>
     </el-form-item>
+
     <el-form-item>
-      <el-select v-model="searchData.type" placeholder="请选择网站">
+      <el-select v-model="searchData.webTypes" placeholder="请选择网站">
        <el-option
-         v-for="item in typeData"
+         v-for="item in webTypes"
          :label="item.name"
          :value="item.id">
        </el-option>
      </el-select>
     </el-form-item>
+
+    <el-date-picker
+      v-model="searchData.date"
+      type="daterange"
+      readonly
+      placeholder="选择日期范围"
+      style="width: 220px">
+    </el-date-picker>
+
     <el-form-item>
       <el-button type="primary" @click.native.prevent="searchNews">查询</el-button>
     </el-form-item>
+
   </el-form>
 
-  <el-table :data="tableData" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
+  <el-table :data="newsList" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
      <!-- 增加一列显示选择框 -->
     <el-table-column type="selection" width="50"></el-table-column>
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
@@ -35,6 +47,7 @@
       </div>
     </el-table-column>
   </el-table>
+
  <div class="pagination-box">
    <el-pagination
      @sizechange="handleSizeChange"
@@ -51,52 +64,34 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data: function () {
     return {
       searchData: {
          text: '',
-         type: ''
+         webTypes: '',
+         date: '',
        },
-      tableData: [{
-        id: '10001',
-        type: '0',
-        date: '2016-05-02',
-        title: '今日阳光明媚',
-        cont: ''
-      },{
-        id: '10002',
-        type: '1',
-        date: '2016-06-02',
-        title: '今日风调雨顺',
-        cont: ''
-      },{
-        id: '10003',
-        type: '0',
-        date: '2016-07-02',
-        title: '今日大雨倾盆',
-        cont: ''
-      },{
-        id: '10004',
-        type: '2',
-        date: '2016-05-02',
-        title: '今日阳光明媚',
-        cont: ''
-      }],
       multipleSelection: [],
-      typeData:[{
-        id: 0,
-        name: '信用轻工网'
-      },{
-        id: 1,
-        name: '星数科技官网'
-      }]
     }
   },
-  computed: {},
-  ready: function () {},
+  computed: {
+    ...mapGetters([
+      'webTypes',
+      'newsList'
+   ])
+  },
+  mounted: function () {
+    this.fetchWebTypes();
+    this.fetchNewsList();
+  },
   attached: function () {},
   methods: {
+    ...mapActions([
+      'fetchWebTypes',
+      'fetchNewsList',
+   ]),
     //表格多选
     handleSelectionChange(val) {
       this.multipleSelection = val;

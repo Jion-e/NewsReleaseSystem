@@ -5,7 +5,7 @@
       <el-form-item label="所属网站">
         <el-select v-model="newsData.type" placeholder="请选择网站">
          <el-option
-           v-for="item in typeData"
+           v-for="item in webTypes"
            :label="item.name"
            :value="item.id">
          </el-option>
@@ -21,7 +21,9 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click.native.prevent="save">保存</el-button>
+        <el-button type="primary"
+         v-loading.fullscreen="open"
+         @click.native.prevent="save">保存</el-button>
         <el-button @click.native.prevent="reset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -29,9 +31,11 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
+      open: false,
       newsData: {
        id: '',
        type: '',
@@ -40,27 +44,37 @@ export default {
        date: '',
        detele: '',
      },
-     typeData:[{
-       id: 0,
-       name: '信用轻工网'
-     },{
-       id: 1,
-       name: '星数科技官网'
-     }]
     };
   },
-  computed: {},
-  ready() {
-
+  computed: {
+    ...mapGetters([
+      'webTypes'
+    ])
+  },
+  mounted (){
+    this.fetchWebTypes();
+    CKEDITOR.replace( 'ckEditor', {
+      language: 'zh-cn',
+      filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
+    });
   },
   attached() {},
   methods: {
+    ...mapActions([
+      'fetchWebTypes',
+      'addNews'
+    ]),
     save(){
       console.log('newsData:' + JSON.stringify(this.newsData));
       const data =   $.trim(CKEDITOR.instances.ckEditor.getData());
       console.log('content:' + data);
-
       this.newsData.cont = data;
+      this.addNews(this.newsData);
+      this.open = true;
+       setTimeout(() => {
+         this.open = false;
+       }, 3000);
+
     },
     reset(){
       this.$confirm('此操作将重置表单, 是否继续?', '提示', {

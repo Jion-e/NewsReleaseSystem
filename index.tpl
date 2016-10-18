@@ -12,12 +12,9 @@
     <!-- built files will be auto injected -->
   </body>
   <script type="text/javascript">
-  window.onload = function(){
-   CKEDITOR.replace( 'ckEditor', {
-                    language: 'zh-cn',
-                    filebrowserUploadUrl: "http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
-                  });
-  };
+  // window.onload = function(){
+  //
+  // };
 
   </script>
 </html>

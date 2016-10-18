@@ -29,7 +29,7 @@ export default {
   width:100%;
   padding: 10px 0;
   background: @base-color;
-  z-index: 999;
+  z-index: 99999;
   h1{color: #fff;}
 }
 </style>
