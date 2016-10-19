@@ -6,15 +6,10 @@
     <title>NewsReleaseSystem</title>
     <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
     <script src="http://shinedata.chinaeid.cn/lib/ckeditor/ckeditor.js" charset="utf-8"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
   </head>
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
-  <script type="text/javascript">
-  // window.onload = function(){
-  //
-  // };
-
-  </script>
 </html>

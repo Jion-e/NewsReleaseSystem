@@ -1,5 +1,5 @@
 <style lang="less">
-.content{margin-left: 310px;margin-top: 80px;margin-right: 10px;}
+.content{margin-left: 266px;margin-top: 80px;margin-right: 10px;}
 
 </style>
 

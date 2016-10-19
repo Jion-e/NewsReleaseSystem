@@ -1,6 +1,6 @@
 <template lang="html">
 <div class="sidebar">
-  <el-menu theme="dark" default-active="/main/newsList"  mode="vertical" router>
+  <el-menu  default-active="/main/newsList"  mode="vertical" router>
      <!-- <el-submenu index="1">
        <template slot="title"><i class="el-icon-message"></i>新闻列表</template>
        <el-menu-item-group title="分组一">
@@ -37,5 +37,5 @@ export default {
 </script>
 
 <style lang="less">
-.sidebar{position: fixed;top:60px;left: 0;width: 300px;}
+.sidebar{position: fixed;top:60px;left: 0;width: 256px;min-height: 500px;box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2)}
 </style>

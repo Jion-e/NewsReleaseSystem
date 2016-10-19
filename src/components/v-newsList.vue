@@ -32,18 +32,18 @@
 
   </el-form>
 
-  <el-table :data="newsList" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
+  <el-table :data="newsData" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
      <!-- 增加一列显示选择框 -->
     <el-table-column type="selection" width="50"></el-table-column>
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
-    <el-table-column property="id" label="序号" width="180" sortable></el-table-column>
+    <el-table-column property="id" label="编号" width="180" sortable></el-table-column>
     <el-table-column property="title" label="标题" width="180"></el-table-column>
-    <el-table-column property="type" label="所属网站" width="180" :formatter="formatWeb"></el-table-column>
+    <el-table-column property="wType" label="所属网站" width="180" :formatter="formatWeb"></el-table-column>
     <el-table-column property="date" label="日期" width="180" sortable></el-table-column>
     <el-table-column align="center" inline-template label="操作" width="180">
       <div class="text-center">
-        <el-button type="text" @click.native="editNews(row.id)">编辑</el-button>
-        <el-button type="text" @click.native="deleteNews(row.id)">删除</el-button>
+        <el-button type="text" @click.native="edit(row.id)">编辑</el-button>
+        <el-button type="text" @click.native="del(row.id)">删除</el-button>
       </div>
     </el-table-column>
   </el-table>
@@ -52,7 +52,7 @@
    <el-pagination
      @sizechange="handleSizeChange"
      @currentchange="handleCurrentChange"
-     :current-page="5"
+     :current-page="1"
      :page-sizes="[10, 20, 30, 40]"
      :page-size="10"
      layout="total, sizes, prev, pager, next, jumper"
@@ -70,27 +70,47 @@ export default {
     return {
       searchData: {
          text: '',
-         webTypes: '',
+         webType: '',
          date: '',
        },
+      // newsData: [],
       multipleSelection: [],
     }
   },
   computed: {
     ...mapGetters([
       'webTypes',
-      'newsList'
-   ])
+      'newsList',
+      'newsItem'
+   ]),
+   newsData(){
+     let newsAll = [];
+     if(this.newsItem.id){ //按编号搜索
+       newsAll.push(this.newsItem)
+     }else{ //按标题搜索
+       for(let key in this.newsList){
+         if(this.newsList[key].is !== "1"){
+           newsAll.push(this.newsList[key])
+         }
+       }
+     }
+     return newsAll;
+   }
   },
   mounted: function () {
     this.fetchWebTypes();
     this.fetchNewsList();
+
+    // setTimeout(() => {
+    //   this.formNewsList()
+    // }, 100)
   },
-  attached: function () {},
   methods: {
     ...mapActions([
       'fetchWebTypes',
       'fetchNewsList',
+      'fetchNewsItem',
+      'deleteNews'
    ]),
     //表格多选
     handleSelectionChange(val) {
@@ -106,33 +126,51 @@ export default {
     },
     //搜索
     searchNews() {
-      console.log('searchData:' +　JSON.stringify(this.searchData));
+      const text = this.searchData.text
+      const webType = this.searchData.webType
+      if(text){
+        //输入的是正整数
+        if(/^[1-9]\d*$/.test(text)){
+          this.fetchNewsItem(text)
+          // this.newsData = [this.newsItem]
+          // console.log(this.newsData);
+        }
+      }
+      if(webType){
+        this.fetchNewsList()
+      }
     },
     //编辑新闻
-    editNews(id){
-      this.$router.push({path: '/main/newsAdd'});
-      console.log('id:' + id);
+    edit(id){
+      this.$router.push({path: '/main/newsAdd/' + id});
     },
     //删除新闻
-    deleteNews(){
+    del(id){
       this.$confirm('此操作将删除该新闻, 是否继续?', '提示', {
-         type: 'warning'
+         type: 'warning',
+         lockScroll: true
        }).then(() => {
+         this.deleteNews(id);
+         this.formNewsList()
          this.$message({
            type: 'success',
            message: '删除成功!'
          });
        }).catch(() => {
-        //  this.$message({
-        //    type: 'info',
-        //    message: '已取消删除'
-        //  });
+
        });
     },
-
+    formNewsList(){
+      this.newsData = []
+      for(let key in this.newsList){
+        if(this.newsList[key].is !== "1"){
+          this.newsData.push(this.newsList[key])
+        }
+      }
+    },
     //格式化所属网站
     formatWeb(row){
-      const type = parseInt(row.type);
+      const type = parseInt(row.wType);
       let typeName = ''
       switch (type) {
         case 0:
@@ -155,6 +193,6 @@ export default {
 .newsTitle{margin: 30px auto;text-align: center;}
 .el-checkbox__inner::after{top:3px;}
 .el-table td .cell{width: 100%}
-// .el-message{top: 60px}
+.el-message{z-index: 99999}
 .pagination-box{text-align: left;margin: 20px 0;}
 </style>

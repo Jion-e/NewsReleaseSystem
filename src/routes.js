@@ -11,6 +11,7 @@ export const routes = [
       {path: '/', name: '', component: NewsList},
       {path: 'newsList', name: '新闻列表', component: NewsList},
       {path: 'newsAdd', name: '添加新闻', component: NewsAdd},
+      {path: 'newsAdd/:id', name: '添加新闻', component: NewsAdd},
     ]
   },
 ]

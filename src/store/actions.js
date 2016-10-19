@@ -1,79 +1,78 @@
-// var config = {
-//   apiKey: "AIzaSyDxUppBRTczs5FWVfmQaiqKve6zaw1_-_I",
-//   authDomain: "newssystem-2b6d6.firebaseapp.com",
-//   databaseURL: "https://newssystem-2b6d6.firebaseio.com",
-//   storageBucket: "newssystem-2b6d6.appspot.com",
-//   messagingSenderId: "830388281949"
-// };
-// firebase.initializeApp(config);
-//
-// const db = firebase.database().ref;
-// const newsRef = db.child('newsData');
-//
-// fetchNewsList = () => {
-//   newsRef.on('value', snapshot => {
-//       this.getNewsData(snapshot.val());
-//   }, err => {
-//       console.log("The read failed: " + err.code);
-//   })
-// })
-//
-// fetchNewsItem = (id) => {
-//
-// }
-// const _get = ({ url, query }, commit) => {
-//   if(commit) commit('START_LOADING')
-//   // let _url
-//   // if(query){
-//   //   _url = `http://m.maizuo.com/v4/api${url}?${query}`
-//   // }else{
-//   //    _url = `http://m.maizuo.com/v4/api${url}`
-//   // }
-//   newsRef.on('value', snapshot => {
-//     console.log(snapshot.val(););
-//     return snapshot.val();
-//   }, err => {
-//       console.log("The read failed: " + err.code);
-//   })
+import firebase from 'firebase'
+
+var config = {
+ apiKey: "AIzaSyDxUppBRTczs5FWVfmQaiqKve6zaw1_-_I",
+ authDomain: "newssystem-2b6d6.firebaseapp.com",
+ databaseURL: "https://newssystem-2b6d6.firebaseio.com",
+ storageBucket: "newssystem-2b6d6.appspot.com",
+ messagingSenderId: "830388281949"
+};
+firebase.initializeApp(config);
+const email = 'w131080601@gmail.com'
+const password =  'timo0703COM'
+// firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+//   // Handle Errors here.
+//   var errorCode = error.code;
+//   var errorMessage = error.message;
+//   console.log('login failed:' + errorMessage);
+// });
+// var user = firebase.auth().currentUser;
+// if (user != null) {
+//   user.providerData.forEach(function (profile) {
+//     console.log("Sign-in provider: "+profile.providerId);
+//     console.log("  Provider-specific UID: "+profile.uid);
+//     console.log("  Name: "+profile.displayName);
+//     console.log("  Email: "+profile.email);
+//     console.log("  Photo URL: "+profile.photoURL);
+//   });
 // }
 
-//
-// export const fetchNewsList = ({commit}, page, count) => {
-//   const url = ''
-//   const query = ''
-//   return _get({ url, query }, commit)
-//   .then((json) => {
-//     if(json.status == 0){
-//       return commit('FETCH_NEWSLIST', json.data)
-//     }
-//     return Promise.reject(new Error('fetchNewsList failed'))
-//   })
-//   .catch((error) => {
-//     return Promise.reject(error)
-//   })
-// }
-//
-//
-let webTypes = [
-  {id: 0,name: '信用轻工网'},
-  {id: 1,name: '星数科技官网'}
-]
-let newsList = [
-  {id: '10001',type: '0',date: '2016-05-02',title: '今日阳光明媚',cont: ''},
-  {id: '10002',type: '1',date: '2016-06-02',title: '今日风调雨顺',cont: ''},
-  {id: '10003',type: '0',date: '2016-07-02',title: '今日大雨倾盆',cont: ''},
-  {id: '10004',type: '2',date: '2016-05-02',title: '今日阳光明媚',cont: ''},
-  {id: '10005',type: '1',date: '2016-05-02',title: '今日阳光明媚',cont: ''},
-]
+const db = firebase.database().ref();
+const newsListRef = db.child('newsList');
+const webTypesRef = db.child('webTypes');
 
 export const fetchWebTypes = ({ commit }) => {
-  commit('GET_WEBTYPES', webTypes)
+  webTypesRef.on('value', snapshot => {
+    // console.log("webTypes:" + snapshot.val());
+    commit('GET_WEBTYPES', snapshot.val())
+  }, err => {
+    console.log("The read webTypes failed: " + err.code);
+  })
 }
 
-export const fetchNewsList = ({ commit }) => {
-  commit('GET_NEWSLIST', newsList)
+export const fetchNewsList = ({ commit }, page, count) => {
+  newsListRef.on('value', snapshot => {
+    // console.log("newsList:" + JSON.stringify(snapshot.val()));
+    commit('GET_NEWSLIST', snapshot.val())
+  }, err => {
+    console.log("The read newsList failed: " + err.code);
+  })
+}
+
+export const fetchNewsItem = ({ commit }, newsID) => {
+  const newsItemRef = firebase.database().ref('newsList/' + newsID);
+  newsItemRef.on('value', snapshot => {
+    // console.log("newsItem:" + JSON.stringify(snapshot.val()));
+    commit('GET_NEWSITEM', snapshot.val())
+  }, err => {
+    console.log("The read newsItem failed: " + err.code);
+  })
+}
+
+export const clearNewsItem = ({ commit }) => {
+  commit('CLEAR_NEWSITEM')
 }
 
 export const addNews = ({ commit }, newsItem) => {
   commit('ADD_NEWS', newsItem)
+  firebase.database().ref('newsList/' + newsItem.id).set(newsItem)
+}
+
+export const updateNews = ({ commit }, newsItem) => {
+  commit('UPDATE_NEWS', newsItem)
+  firebase.database().ref('newsList/' + newsItem.id).update(newsItem)
+}
+
+export const deleteNews = ({ commit }, newsID) => {
+  firebase.database().ref('newsList/' + newsID).update({'is': '1'})
 }

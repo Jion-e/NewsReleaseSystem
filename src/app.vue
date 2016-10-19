@@ -10,5 +10,5 @@
   };
 </script>
 <style media="screen">
-  body{padding: 0 !important;}
+  body{padding: 0 !important;overflow: auto !important}
 </style>

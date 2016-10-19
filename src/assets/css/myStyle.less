@@ -123,8 +123,8 @@ input[type="file"] > input[type="button"]::-moz-focus-inner{border:none;padding:
 //文本被选中样式
 ::selection {
     // background: #FFF7B6;
-    background: lighten(@base-color, 48%);
-    color: black;
+    background: lighten(@base-color, 48%) !important;
+    color: black !important;
 }
 /**************** 修改pc字体 ******************/
 @media (min-width:@screen-desktop){a,body{font-family:@font-family-pc}}
