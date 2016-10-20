@@ -16,8 +16,21 @@
        </el-select>
       </el-form-item>
 
+      <!-- <el-form-item label="上传图片">
+          <input type="file" name="name" id="upload" value="">
+          <el-button type="primary" @click.native="uploadImg">上传</el-button>
+      </el-form-item> -->
+
+      <el-form-item label="发布日期">
+        <el-date-picker
+          v-model="newsData.date"
+          type="date"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+
       <el-form-item label="内容编辑">
-        <textarea id="ckEditor" name="ckEditor" cols="20" rows="2" class="ckeditor"></textarea>
+        <textarea v-model="newsData.text" id="ckEditor" name="ckEditor" cols="20" rows="2" class="ckeditor"></textarea>
       </el-form-item>
 
       <el-form-item>
@@ -27,6 +40,7 @@
         <el-button @click.native.prevent="reset">重置</el-button>
       </el-form-item>
     </el-form>
+
   </div>
 </template>
 
@@ -37,15 +51,7 @@ export default {
   data() {
     return {
       open: false,
-      newsData: {
-        // id: '',
-        // wType: '',
-        // mType: '',
-        // title: '',
-        // cont: '',
-        // date: '',
-        // delete: '0'
-      }
+      newsData: {}
     };
   },
   computed: {
@@ -59,15 +65,31 @@ export default {
       language: 'zh-cn',
       filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
     });
-
+    // const vm = this
+    // const uploadBtn = document.getElementById('cke_111_uiElement')
+    // uploadBtn.addEventListener('click', function(){
+    //   vm.uploadImg()
+    // })
     //进入页面加载数据
     const newsID = this.$route.params.id
+    this.fetchNewsItem(newsID)
+
     if(newsID){
-      this.fetchNewsItem(newsID)
-      this.newsData = this.newsItem
-      CKEDITOR.instances.ckEditor.setData(this.newsItem.cont)
+      setTimeout(() =>{
+        this.newsData = this.newsItem
+        CKEDITOR.instances.ckEditor.setData(this.newsItem.cont)
+      }, 1000)
     }else{
-      this.newsData = {}
+      this.newsData = {
+        id: '',
+        wType: '',
+        mType: '',
+        title: '',
+        cont: '',
+        date: '',
+        creatTime: '',
+        is: '0'
+      }
     }
     this.fetchWebTypes();
   },
@@ -76,13 +98,13 @@ export default {
     ...mapActions([
       'fetchWebTypes',
       'fetchNewsItem',
-      'clearNewsItem',
       'addNews',
-      'updateNews'
+      'updateNews',
+      'uploadImg'
     ]),
     save(){
       const textData = $.trim(CKEDITOR.instances.ckEditor.getData())
-      const date = moment().format('YYYY-MM-DD HH:mm:ss')
+      const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
       const id = Date.parse(new Date())/1000
 
       if(!this.newsData.title){
@@ -92,17 +114,19 @@ export default {
         });
         return false
       }
+
       //判断新增还是更新
       const newsID = this.$route.params.id
-      if(!newsID){ //新增新闻
-        this.newsData.date = date
-        this.newsData.cont = textData
+
+      if(!newsID){ //新增
         this.newsData.id = id
-        this.newsData.is = '0'
+        this.newsData.cont = textData
+        this.newsData.creatTime = creatTime
+        this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.addNews(this.newsData)
-      }else{
-        // this.newsData.cont = textData
-        // this.newsData.date = date
+      }else{ //更新
+        this.newsData.cont = textData
+        this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.updateNews(this.newsData)
       }
 

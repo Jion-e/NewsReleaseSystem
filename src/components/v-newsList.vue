@@ -9,7 +9,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-select v-model="searchData.webTypes" placeholder="请选择网站">
+      <el-select v-model="searchData.webType" placeholder="请选择网站">
        <el-option
          v-for="item in webTypes"
          :label="item.name"
@@ -22,6 +22,7 @@
       v-model="searchData.date"
       type="daterange"
       readonly
+      format="yyyy-MM-dd"
       placeholder="选择日期范围"
       style="width: 220px">
     </el-date-picker>
@@ -32,7 +33,7 @@
 
   </el-form>
 
-  <el-table :data="newsData" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
+  <el-table :data="newsList" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
      <!-- 增加一列显示选择框 -->
     <el-table-column type="selection" width="50"></el-table-column>
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
@@ -65,6 +66,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import moment from 'moment'
 export default {
   data: function () {
     return {
@@ -83,32 +85,21 @@ export default {
       'newsList',
       'newsItem'
    ]),
-   newsData(){
-     let newsAll = [];
-     if(this.newsItem.id){ //按编号搜索
-       newsAll.push(this.newsItem)
-     }else{ //按标题搜索
-       for(let key in this.newsList){
-         if(this.newsList[key].is !== "1"){
-           newsAll.push(this.newsList[key])
-         }
-       }
-     }
-     return newsAll;
-   }
+  //  newsData(){
+  //    return newsAll;
+  //  }
   },
   mounted: function () {
-    this.fetchWebTypes();
-    this.fetchNewsList();
-
-    // setTimeout(() => {
-    //   this.formNewsList()
-    // }, 100)
+    this.fetchWebTypes()
+    this.fetchNewsList()
   },
   methods: {
     ...mapActions([
       'fetchWebTypes',
       'fetchNewsList',
+      'fetchNewsListById',
+      'fetchNewsListByDate',
+      'fetchNewsListByWeb',
       'fetchNewsItem',
       'deleteNews'
    ]),
@@ -128,16 +119,31 @@ export default {
     searchNews() {
       const text = this.searchData.text
       const webType = this.searchData.webType
+      const date = this.searchData.date
+      if(!(text || webType || date)){
+        this.fetchNewsList()
+        return false
+      }
+
+      if(date){
+        const startTime = moment(date[0]).format('YYYY-MM-DD')
+        const endTime = moment(date[1]).format('YYYY-MM-DD')
+        const queryDate = {startTime, endTime}
+        this.fetchNewsListByDate(queryDate)
+      }
+
       if(text){
         //输入的是正整数
         if(/^[1-9]\d*$/.test(text)){
-          this.fetchNewsItem(text)
+          this.fetchNewsListById(text)
           // this.newsData = [this.newsItem]
           // console.log(this.newsData);
         }
       }
+
       if(webType){
-        this.fetchNewsList()
+
+        this.fetchNewsListByWeb(webType)
       }
     },
     //编辑新闻
@@ -151,7 +157,7 @@ export default {
          lockScroll: true
        }).then(() => {
          this.deleteNews(id);
-         this.formNewsList()
+         this.fetchNewsList()
          this.$message({
            type: 'success',
            message: '删除成功!'
@@ -160,14 +166,14 @@ export default {
 
        });
     },
-    formNewsList(){
-      this.newsData = []
-      for(let key in this.newsList){
-        if(this.newsList[key].is !== "1"){
-          this.newsData.push(this.newsList[key])
-        }
-      }
-    },
+    // formNewsList(){
+    //   this.newsData = []
+    //   for(let key in this.newsList){
+    //     if(this.newsList[key].is !== "1"){
+    //       this.newsData.push(this.newsList[key])
+    //     }
+    //   }
+    // },
     //格式化所属网站
     formatWeb(row){
       const type = parseInt(row.wType);
