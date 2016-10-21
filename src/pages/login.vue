@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../assets/css/myToggle.less";
+// @import "../assets/css/myToggle.less";
 #login{
   position: fixed;
   top:50%;
@@ -11,7 +11,7 @@
   }
   .form-group{
     width: 90%;
-    .center-block;
+    margin: 0 auto;
   }
   .form-label{
     text-align: left;

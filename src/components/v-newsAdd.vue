@@ -30,7 +30,13 @@
       </el-form-item>
 
       <el-form-item label="内容编辑">
-        <textarea v-model="newsData.text" id="ckEditor" name="ckEditor" cols="20" rows="2" class="ckeditor"></textarea>
+        <!-- <textarea v-model="newsData.text" id="ckEditor" name="ckEditor" cols="20" rows="2" class="ckeditor"></textarea> -->
+        <!-- <textarea id="textarea1" style="height:400px;max-height:500px;">
+            <p>请输入内容...</p>
+        </textarea> -->
+        <div id="editor-trigger" style="height:400px;max-height:500px;">
+            <p>请输入内容...</p>
+        </div>
       </el-form-item>
 
       <el-form-item>
@@ -47,6 +53,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
+// var wangeditor = require('wangeditor')
 export default {
   data() {
     return {
@@ -67,33 +74,20 @@ export default {
     ])
   },
   mounted (){
-    CKEDITOR.replace( 'ckEditor', {
-      language: 'zh-cn',
-      // filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
-      filebrowserUploadUrl: "http://127.0.0.1:3000/upload"
-    });
+    // CKEDITOR.replace( 'ckEditor', {
+    //   language: 'zh-cn',
+  // filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
+    // });
+    var editor = new wangEditor('editor-trigger');
+    editor.config.uploadImgUrl = 'http://localhost:8012/upload';
 
-    const vm = this
-    //
-    // uploadBtn.addEventListener('click', function(){
-    //   alert('ss')
-    //   // vm.uploadImg
-    // })
-    const uploadBtn = document.getElementById("cke_157_label")
-    if(!!uploadBtn){
-      uploadBtn.addEventListener("click", function(){
-        alert('ss')
-      });
-    }
-    this.$nextTick(function () {
+    editor.onchange = function () {
+        this.newsData.cont = editor.$txt.html();
+    };
+    editor.create();
 
+    // this.$nextTick(function () {})
 
-    })
-
-    // $('#cke_105_label').click(function(){
-    //   debugger
-    //   vm.uploadImg()
-    // })
     //进入页面加载数据
     const newsID = this.$route.params.id
     this.fetchNewsItem(newsID)
@@ -101,7 +95,8 @@ export default {
     if(newsID){
       setTimeout(() =>{
         this.newsData = this.newsItem
-        CKEDITOR.instances.ckEditor.setData(this.newsItem.cont)
+        // CKEDITOR.instances.ckEditor.setData(this.newsItem.cont)
+        editor.$txt.html(this.newsData.cont)
       }, 1000)
     }else{
       this.newsData = {
@@ -127,7 +122,7 @@ export default {
       'uploadImg'
     ]),
     save(){
-      const textData = $.trim(CKEDITOR.instances.ckEditor.getData())
+      // const textData = $.trim(CKEDITOR.instances.ckEditor.getData())
       const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
       const id = Date.parse(new Date())/1000
 
@@ -144,12 +139,12 @@ export default {
 
       if(!newsID){ //新增
         this.newsData.id = id
-        this.newsData.cont = textData
+        // this.newsData.cont = textData
         this.newsData.creatTime = creatTime
         this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.addNews(this.newsData)
       }else{ //更新
-        this.newsData.cont = textData
+        // this.newsData.cont = textData
         this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.updateNews(this.newsData)
       }
@@ -182,4 +177,6 @@ export default {
 .editor{width: 682px;}
 #cke_1_contents{height: 380px !important;}
 .el-notification{top: 20% !important}
+.wangEditor-container .content{margin: 0}
+.menu-item i{font-size: 16px;}
 </style>

@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style media="screen" lang="less">
-@import "../assets/css/myToggle.less";
+// @import "../assets/css/myToggle.less";
 
 #header{
   position: fixed;
@@ -28,7 +28,7 @@ export default {
   left: 0;
   width:100%;
   padding: 10px 0;
-  background: @base-color;
+  background: #20A0FF;
   z-index: 99999;
   box-shadow: 0 3px 4px 0 rgba(0,0,0,0.14),0 3px 3px -2px rgba(0,0,0,0.12),0 1px 8px 0 rgba(0,0,0,0.2);
   h1{color: #fff;}
