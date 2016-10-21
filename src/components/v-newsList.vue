@@ -9,7 +9,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-select v-model="searchData.webType" placeholder="请选择网站">
+      <el-select v-model="searchData.webType" placeholder="请选择网站" clearable>
        <el-option
          v-for="item in webTypes"
          :label="item.name"
@@ -37,13 +37,14 @@
      <!-- 增加一列显示选择框 -->
     <el-table-column type="selection" width="50"></el-table-column>
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
-    <el-table-column property="id" label="编号" width="180" sortable></el-table-column>
-    <el-table-column property="title" label="标题" width="180"></el-table-column>
+    <el-table-column property="id" label="编号" width="160" sortable></el-table-column>
+    <el-table-column property="title" label="标题" width="230"></el-table-column>
     <el-table-column property="wType" label="所属网站" width="180" :formatter="formatWeb"></el-table-column>
-    <el-table-column property="date" label="日期" width="180" sortable></el-table-column>
+    <el-table-column property="date" label="日期" width="150" sortable></el-table-column>
     <el-table-column align="center" inline-template label="操作" width="180">
-      <div class="text-center">
+      <div class="text-center" v-if="row.id">
         <el-button type="text" @click.native="edit(row.id)">编辑</el-button>
+        <el-button type="text" @click.native="view(row.id)">预览</el-button>
         <el-button type="text" @click.native="del(row.id)">删除</el-button>
       </div>
     </el-table-column>
@@ -75,7 +76,6 @@ export default {
          webType: '',
          date: '',
        },
-      // newsData: [],
       multipleSelection: [],
     }
   },
@@ -85,9 +85,6 @@ export default {
       'newsList',
       'newsItem'
    ]),
-  //  newsData(){
-  //    return newsAll;
-  //  }
   },
   mounted: function () {
     this.fetchWebTypes()
@@ -117,6 +114,7 @@ export default {
     },
     //搜索
     searchNews() {
+
       const text = this.searchData.text
       const webType = this.searchData.webType
       const date = this.searchData.date
@@ -136,13 +134,10 @@ export default {
         //输入的是正整数
         if(/^[1-9]\d*$/.test(text)){
           this.fetchNewsListById(text)
-          // this.newsData = [this.newsItem]
-          // console.log(this.newsData);
         }
       }
 
       if(webType){
-
         this.fetchNewsListByWeb(webType)
       }
     },
@@ -166,6 +161,10 @@ export default {
 
        });
     },
+    //预览
+    view(id){
+      this.$router.push({path: '/preview/' + id})
+    },
     // formNewsList(){
     //   this.newsData = []
     //   for(let key in this.newsList){
@@ -186,7 +185,7 @@ export default {
           typeName = '星数科技官网'
           break;
         default:
-          typeName = '所属网站不明'
+          typeName = ''
       }
       return typeName;
     }
@@ -201,4 +200,5 @@ export default {
 .el-table td .cell{width: 100%}
 .el-message{z-index: 99999}
 .pagination-box{text-align: left;margin: 20px 0;}
+.cell span{white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
 </style>

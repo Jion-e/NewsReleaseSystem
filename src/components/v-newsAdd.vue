@@ -1,8 +1,8 @@
 <template lang="html">
   <div class="editor">
-    <el-form :model="newsData" ref="newsForm" label-width="80px">
+    <el-form :model="newsData" :rules="formRule" ref="newsForm" label-width="100px">
 
-      <el-form-item label="新闻标题">
+      <el-form-item prop="title" label="新闻标题">
         <el-input v-model="newsData.title"></el-input>
       </el-form-item>
 
@@ -51,7 +51,13 @@ export default {
   data() {
     return {
       open: false,
-      newsData: {}
+      newsData: {},
+      formRule: {
+         title: [
+           { required: true, message: '请输入新闻标题', trigger: 'blur' },
+          //  { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
+         ]
+       }
     };
   },
   computed: {
@@ -63,11 +69,29 @@ export default {
   mounted (){
     CKEDITOR.replace( 'ckEditor', {
       language: 'zh-cn',
-      filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
+      // filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
+      filebrowserUploadUrl: "http://127.0.0.1:3000/upload"
     });
-    // const vm = this
-    // const uploadBtn = document.getElementById('cke_111_uiElement')
+
+    const vm = this
+    //
     // uploadBtn.addEventListener('click', function(){
+    //   alert('ss')
+    //   // vm.uploadImg
+    // })
+    const uploadBtn = document.getElementById("cke_157_label")
+    if(!!uploadBtn){
+      uploadBtn.addEventListener("click", function(){
+        alert('ss')
+      });
+    }
+    this.$nextTick(function () {
+
+
+    })
+
+    // $('#cke_105_label').click(function(){
+    //   debugger
     //   vm.uploadImg()
     // })
     //进入页面加载数据

@@ -122,8 +122,9 @@ export default {
      * @param {[String]} newsID [新闻序号]
      */
     deleteNews(newsID) {
-      newsItemRef(newsItem.id).update({
-        'is': '1'
-      })
+      // newsItemRef(newsID).update({
+      //   'is': '1'
+      // })
+      newsItemRef(newsID).remove()
     },
 }

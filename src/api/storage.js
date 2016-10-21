@@ -10,7 +10,7 @@ export default {
     const id = Date.parse(new Date()) / 1000
 
     const metadata = {
-      contentType: 'image/jpeg'
+      // contentType: 'image/jpeg'
     };
 
     const uploadTask = storageRef.child('images/' + id).put(file, metadata);

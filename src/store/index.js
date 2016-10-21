@@ -34,5 +34,5 @@ export default new Vuex.Store({
     getters,
     actions,
     mutations,
-    strict: debug,
+    // strict: debug,
 })
