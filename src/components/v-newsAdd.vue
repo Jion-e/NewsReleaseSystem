@@ -25,18 +25,19 @@
         <el-date-picker
           v-model="newsData.date"
           type="date"
+          readonly
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
 
+      <el-form-item label="来源">
+        <el-input v-model="newsData.source"></el-input>
+      </el-form-item>
+
       <el-form-item label="内容编辑">
-        <!-- <textarea v-model="newsData.text" id="ckEditor" name="ckEditor" cols="20" rows="2" class="ckeditor"></textarea> -->
-        <!-- <textarea id="textarea1" style="height:400px;max-height:500px;">
+        <textarea id="editor-trigger"  style="height:400px;max-height:500px;">
             <p>请输入内容...</p>
-        </textarea> -->
-        <div id="editor-trigger" style="height:400px;max-height:500px;">
-            <p>请输入内容...</p>
-        </div>
+        </textarea>
       </el-form-item>
 
       <el-form-item>
@@ -53,12 +54,22 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
-// var wangeditor = require('wangeditor')
+
 export default {
   data() {
     return {
       open: false,
-      newsData: {},
+      newsData:  {
+        id: '',
+        wType: '',
+        mType: '',
+        title: '',
+        source: '',
+        cont: '',
+        date: '',
+        creatTime: '',
+        is: '0'
+      },
       formRule: {
          title: [
            { required: true, message: '请输入新闻标题', trigger: 'blur' },
@@ -74,45 +85,25 @@ export default {
     ])
   },
   mounted (){
-    // CKEDITOR.replace( 'ckEditor', {
-    //   language: 'zh-cn',
-  // filebrowserUploadUrl:"http://ccqr.themistech.cn:80/servlet/UploadServerlet?type=image"
-    // });
-    var editor = new wangEditor('editor-trigger');
-    editor.config.uploadImgUrl = 'http://localhost:8012/upload';
-
-    editor.onchange = function () {
-        this.newsData.cont = editor.$txt.html();
-    };
-    editor.create();
-
-    // this.$nextTick(function () {})
-
-    //进入页面加载数据
-    const newsID = this.$route.params.id
-    this.fetchNewsItem(newsID)
-
-    if(newsID){
-      setTimeout(() =>{
-        this.newsData = this.newsItem
-        // CKEDITOR.instances.ckEditor.setData(this.newsItem.cont)
-        editor.$txt.html(this.newsData.cont)
-      }, 1000)
-    }else{
-      this.newsData = {
-        id: '',
-        wType: '',
-        mType: '',
-        title: '',
-        cont: '',
-        date: '',
-        creatTime: '',
-        is: '0'
-      }
-    }
-    this.fetchWebTypes();
+    this.pageInit()
   },
-  attached() {},
+  watch: {
+    '$route' (to, from) {
+      // console.log('start');
+      // const newsID = this.$route.params.id
+      // if(newsID){
+      //   setTimeout(() => {
+      //     this.newsData = this.newsItem
+      //     editor.$txt.html(this.newsData.cont)
+      //   }, 800)
+      // }else{
+      //   setTimeout(() => {
+      //     this.clearPage()
+      //   }, 600)
+      // }
+
+    }
+  },
   methods: {
     ...mapActions([
       'fetchWebTypes',
@@ -121,8 +112,52 @@ export default {
       'updateNews',
       'uploadImg'
     ]),
+    pageInit(){
+      const newsID = this.$route.params.id
+      const editor = new wangEditor('editor-trigger')
+
+      this.fetchNewsItem(newsID)
+      this.fetchWebTypes()
+      this.wangEditorInit(editor)
+
+      if(newsID){
+        setTimeout(() => {
+          this.newsData = this.newsItem
+          editor.$txt.html(this.newsData.cont)
+        }, 800)
+      }else{
+        setTimeout(() => {
+          this.clearPage()
+        }, 600)
+      }
+
+      // this.$nextTick(function () {
+      //   debugger
+      //   if(newsID){
+      //     vm.newsData = vm.newsItem
+      //     editor.$txt.html(vm.newsData.cont)
+      //   }
+      // })
+    },
+    /**
+     * 富文本编译器初始化
+     */
+    wangEditorInit(editor){
+      const UPLOAD_SERVER = 'http://localhost:2002/upload'
+      const vm = this
+
+      editor.config.uploadImgUrl = UPLOAD_SERVER;
+      editor.onchange = function () {
+         //获取编辑器内容
+         vm.newsData.cont = editor.$txt.html();
+      };
+      editor.create();
+    },
+    /**
+     * 保存新闻详情
+     */
     save(){
-      // const textData = $.trim(CKEDITOR.instances.ckEditor.getData())
+      debugger
       const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
       const id = Date.parse(new Date())/1000
 
@@ -134,39 +169,47 @@ export default {
         return false
       }
 
+      this.open = true;
+
       //判断新增还是更新
       const newsID = this.$route.params.id
 
       if(!newsID){ //新增
         this.newsData.id = id
-        // this.newsData.cont = textData
         this.newsData.creatTime = creatTime
         this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.addNews(this.newsData)
       }else{ //更新
-        // this.newsData.cont = textData
         this.newsData.date = moment(this.newsData.date).format('YYYY-MM-DD')
         this.updateNews(this.newsData)
       }
 
-      this.open = true;
        setTimeout(() => {
          this.open = false;
          this.$router.push({path: '/main/newsList'});
-       }, 1000);
+       }, 500);
+
     },
     reset(){
       this.$confirm('此操作将重置表单, 是否继续?', '提示', {
          type: 'warning'
        }).then(() => {
-         this.$refs.newsForm.resetFields();
-        //  for(let key in this.newsData){
-        //    this.newsData[key] = ''
-        //  }
-         CKEDITOR.instances.ckEditor.setData('');
-       }).catch(() => {
-
-       });
+         this.clearPage()
+       })
+    },
+    clearPage(){
+      this.newsData = {
+        id: '',
+        wType: '',
+        mType: '',
+        title: '',
+        source: '',
+        cont: '',
+        date: '',
+        creatTime: '',
+        is: '0'
+      }
+      $('.wangEditor-txt').html('<p><br></p>');
     }
   },
   components: {}
@@ -175,8 +218,8 @@ export default {
 
 <style lang="less">
 .editor{width: 682px;}
-#cke_1_contents{height: 380px !important;}
-.el-notification{top: 20% !important}
+// .el-notification{top: 20% !important}
 .wangEditor-container .content{margin: 0}
+.wangEditor-fullscreen{margin-top: 60px}
 .menu-item i{font-size: 16px;}
 </style>

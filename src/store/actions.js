@@ -7,8 +7,15 @@ export const fetchWebTypes = ({ commit }) => {
   })
 }
 
-export const fetchNewsList = ({ commit }, page, count) => {
-  api.getNewsList().then(data => {
+// export const fetchNewsList = ({ commit }, page, count) => {
+//   api.getNewsList().then(data => {
+//     // console.log('page:'+ data);
+//     commit('GET_NEWSLIST', data)
+//   })
+// }
+//
+export const fetchNewsList = ({ commit }, pageSize) => {
+  api.getNewsList(pageSize).then(data => {
     // console.log('page:'+ data);
     commit('GET_NEWSLIST', data)
   })

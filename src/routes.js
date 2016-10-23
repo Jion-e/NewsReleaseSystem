@@ -1,6 +1,5 @@
 'use strict'
 const Login = resolve => require(['./pages/login.vue'], resolve)
-const Upload = resolve => require(['./pages/upload.vue'], resolve)
 const Main = resolve => require(['./pages/main.vue'], resolve)
 const NewsList = resolve => require(['./components/v-newsList.vue'], resolve)
 const NewsAdd = resolve => require(['./components/v-newsAdd.vue'], resolve)
@@ -8,7 +7,6 @@ const NewsView = resolve => require(['./components/v-newsView.vue'], resolve)
 
 export const routes = [
   {path: '/', name: '登录', component: Login},
-  {path: '/upload', name: '登录', component: Upload},
   {path: '/main', name: '主页面', component: Main,
     children: [
       {path: '/', name: '', component: NewsList},

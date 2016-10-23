@@ -39,9 +39,9 @@
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
     <el-table-column property="id" label="编号" width="160" sortable></el-table-column>
     <el-table-column property="title" label="标题" width="230"></el-table-column>
-    <el-table-column property="wType" label="所属网站" width="180" :formatter="formatWeb"></el-table-column>
+    <el-table-column property="wType" label="所属网站" width="160" :formatter="formatWeb"></el-table-column>
     <el-table-column property="date" label="日期" width="150" sortable></el-table-column>
-    <el-table-column align="center" inline-template label="操作" width="180">
+    <el-table-column align="center" inline-template label="操作" width="200">
       <div class="text-center" v-if="row.id">
         <el-button type="text" @click.native="edit(row.id)">编辑</el-button>
         <el-button type="text" @click.native="view(row.id)">预览</el-button>
@@ -54,11 +54,11 @@
    <el-pagination
      @sizechange="handleSizeChange"
      @currentchange="handleCurrentChange"
-     :current-page="1"
-     :page-sizes="[10, 20, 30, 40]"
-     :page-size="10"
+     :current-page="page.current"
+     :page-sizes="page.sizes"
+     :page-size="page.size"
      layout="total, sizes, prev, pager, next, jumper"
-     :total="400">
+     :total="page.total">
    </el-pagination>
  </div>
 
@@ -71,6 +71,12 @@ import moment from 'moment'
 export default {
   data: function () {
     return {
+      page:{
+        total: 300,
+        current: 1,
+        size: 5,
+        sizes: [5, 10, 15, 20]
+      },
       searchData: {
          text: '',
          webType: '',
@@ -88,7 +94,7 @@ export default {
   },
   mounted: function () {
     this.fetchWebTypes()
-    this.fetchNewsList()
+    this.fetchNewsList(this.page.size)
   },
   methods: {
     ...mapActions([
@@ -107,6 +113,7 @@ export default {
     //每页条数
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.fetchNewsList(parseInt(val))
     },
     //当前页
     handleCurrentChange(val) {
@@ -119,7 +126,7 @@ export default {
       const webType = this.searchData.webType
       const date = this.searchData.date
       if(!(text || webType || date)){
-        this.fetchNewsList()
+        this.fetchNewsList(this.page.size)
         return false
       }
 
@@ -152,7 +159,7 @@ export default {
          lockScroll: true
        }).then(() => {
          this.deleteNews(id);
-         this.fetchNewsList()
+         this.fetchNewsList(this.page.size)
          this.$message({
            type: 'success',
            message: '删除成功!'

@@ -15,7 +15,7 @@ const webTypesRef = db.child('webTypes')
 const newsItemRef = newsID => db.child('newsList/' + newsID)
 const newsExistRef = newsListRef.orderByChild('is').equalTo('0')
 const newsWebRef = webType => newsListRef.orderByChild('wType').equalTo(webType)
-const newsPageRef = page => newsListRef.orderByChild('is').equalTo('0').limitToFirst(page)
+const newsPageRef = pageSize => newsListRef.orderByChild('is').equalTo('0').limitToFirst(pageSize)
 const newsDateRef = date => newsListRef.orderByChild('date').startAt(date.startTime).endAt(date.endTime)
 
 let newsListArr = []
@@ -28,23 +28,29 @@ let newsItem = {}
    * @return {[Promise]}        [新闻列表]
    */
 const cb = (e, ref, errText) => {
+  // console.log(ref.toString());
   return new Promise(resolve => {
     newsListArr = []
+
+    //如果查询节点存在就会执行下面的代码，否则直接返回newsListArr为空
     ref.on(e, snapshot => {
       newsListArr.push(snapshot.val())
-      resolve(newsListArr)
     }, err => {
       console.log(`${errText}:` + err.code);
     })
+
+    resolve(newsListArr)
   })
 }
 
 export default {
   /*** 查询事件 ****/
-  getNewsList() {
-      return cb("child_added", newsExistRef, "获取新闻列表失败")
+  // getNewsList() {
+  //     return cb("child_added", newsExistRef, "获取新闻列表失败")
+  //   },
+  getNewsList(pageSize) {
+      return cb("child_added", newsPageRef(pageSize), "获取新闻列表失败")
     },
-
     // getNewsListByPage(page, count) {
     //   const newsPageRef = newsListRef.orderByChild('is').equalTo('0').limitToFirst(page)
     //   newsPageRef.on('child_added', snapshot => {
@@ -79,7 +85,7 @@ export default {
      */
     getWebTypes() {
       return new Promise(resolve => {
-        webTypesRef.on('value', snapshot => {
+        webTypesRef.once('value', snapshot => {
           resolve(snapshot.val())
         }, err => {
           console.log("获取所属网站列表失败:" + err.code);
@@ -95,7 +101,7 @@ export default {
       const newsIdRef = firebase.database().ref('newsList/' + newsID)
       newsItem = {}
       return new Promise(resolve => {
-        newsIdRef.on('value', snapshot => {
+        newsIdRef.once('value', snapshot => {
           newsItem = snapshot.val()
           resolve(newsItem)
         }, err => {
