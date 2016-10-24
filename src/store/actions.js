@@ -44,6 +44,7 @@ export const fetchNewsListByWeb = ({ commit }, webType) => {
 export const fetchNewsItem = ({ commit }, newsID) => {
   api.getNewsItem(newsID).then(data => {
       commit('GET_NEWSITEM', data)
+      // console.table(data);
   })
 }
 

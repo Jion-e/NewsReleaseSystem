@@ -20,11 +20,11 @@ const mutations = {
       state.webTypes = webTypes
     },
     ADD_NEWS(state, newsItem){   //添加新闻
-      state.newsItem = newsItem;
+      state.newsItem = newsItem
     },
     UPDATE_NEWS(state, newsItem){  //更新新闻
-      state.newsItem = newsItem;
-    }
+      state.newsItem = newsItem
+    },
 }
 
 const debug = process.env.NODE_ENV !== 'production'

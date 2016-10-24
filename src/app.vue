@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view keep-alive></router-view>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'app'
+    name: 'app',
   };
 </script>
 <style media="screen">
-  body{padding: 0 !important;overflow: auto !important}
+  body{position: inherit !important;padding: 0 !important;overflow: auto !important;}
 </style>

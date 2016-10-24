@@ -98,12 +98,10 @@ export default {
      * @return {[Promise]}        [新闻详情]
      */
     getNewsItem(newsID) {
-      const newsIdRef = firebase.database().ref('newsList/' + newsID)
-      newsItem = {}
+
       return new Promise(resolve => {
-        newsIdRef.once('value', snapshot => {
-          newsItem = snapshot.val()
-          resolve(newsItem)
+      newsItemRef(newsID).once('value', snapshot => {
+          resolve(snapshot.val())
         }, err => {
           console.log("获取新闻详情失败:" + err.code);
         })

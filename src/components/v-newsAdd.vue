@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="editor">
+  <div class="editor" v-loading.fullscreen="isload">
     <el-form :model="newsData" :rules="formRule" ref="newsForm" label-width="100px">
 
       <el-form-item prop="title" label="新闻标题">
@@ -7,7 +7,7 @@
       </el-form-item>
 
       <el-form-item label="所属网站">
-        <el-select v-model="newsData.wType" placeholder="请选择网站">
+        <el-select v-model="newsData.wType" placeholder="请选择网站" clearable>
          <el-option
            v-for="item in webTypes"
            :label="item.name"
@@ -41,7 +41,8 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary"
+        <el-button
+         type="primary"
          v-loading.fullscreen="open"
          @click.native.prevent="save">保存</el-button>
         <el-button @click.native.prevent="reset">重置</el-button>
@@ -59,16 +60,16 @@ export default {
   data() {
     return {
       open: false,
-      newsData:  {
-        id: '',
-        wType: '',
-        mType: '',
-        title: '',
-        source: '',
-        cont: '',
-        date: '',
-        creatTime: '',
-        is: '0'
+      empty: {
+          id: '',
+          wType: '',
+          mType: '',
+          title: '',
+          source: '',
+          cont: '',
+          date: '',
+          creatTime: '',
+          is: '0'
       },
       formRule: {
          title: [
@@ -82,27 +83,36 @@ export default {
     ...mapGetters([
       'webTypes',
       'newsItem'
-    ])
+    ]),
+    isload(){
+      const newsID = this.$route.params.id
+      if(newsID){
+        if(this.newsData.id){
+          return false
+        }else {
+          return true
+        }
+      }
+      return false
+    },
+    newsData(){
+      const newsID = this.$route.params.id
+
+      if(newsID){
+        if(this.webTypes.length == 0){
+          return this.empty
+        }
+        $('.wangEditor-txt').html(this.newsItem.cont)
+        return this.newsItem
+      }else {
+        $('.wangEditor-txt').html('<p><br></p>')
+        return this.empty
+      }
+    },
+
   },
   mounted (){
     this.pageInit()
-  },
-  watch: {
-    '$route' (to, from) {
-      // console.log('start');
-      // const newsID = this.$route.params.id
-      // if(newsID){
-      //   setTimeout(() => {
-      //     this.newsData = this.newsItem
-      //     editor.$txt.html(this.newsData.cont)
-      //   }, 800)
-      // }else{
-      //   setTimeout(() => {
-      //     this.clearPage()
-      //   }, 600)
-      // }
-
-    }
   },
   methods: {
     ...mapActions([
@@ -120,24 +130,6 @@ export default {
       this.fetchWebTypes()
       this.wangEditorInit(editor)
 
-      if(newsID){
-        setTimeout(() => {
-          this.newsData = this.newsItem
-          editor.$txt.html(this.newsData.cont)
-        }, 800)
-      }else{
-        setTimeout(() => {
-          this.clearPage()
-        }, 600)
-      }
-
-      // this.$nextTick(function () {
-      //   debugger
-      //   if(newsID){
-      //     vm.newsData = vm.newsItem
-      //     editor.$txt.html(vm.newsData.cont)
-      //   }
-      // })
     },
     /**
      * 富文本编译器初始化
@@ -157,7 +149,7 @@ export default {
      * 保存新闻详情
      */
     save(){
-      debugger
+      // debugger
       const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
       const id = Date.parse(new Date())/1000
 
@@ -196,20 +188,6 @@ export default {
        }).then(() => {
          this.clearPage()
        })
-    },
-    clearPage(){
-      this.newsData = {
-        id: '',
-        wType: '',
-        mType: '',
-        title: '',
-        source: '',
-        cont: '',
-        date: '',
-        creatTime: '',
-        is: '0'
-      }
-      $('.wangEditor-txt').html('<p><br></p>');
     }
   },
   components: {}
@@ -217,9 +195,10 @@ export default {
 </script>
 
 <style lang="less">
-.editor{width: 682px;}
+.editor{width: 800px;}
 // .el-notification{top: 20% !important}
 .wangEditor-container .content{margin: 0}
 .wangEditor-fullscreen{margin-top: 60px}
 .menu-item i{font-size: 16px;}
+.el-notification{z-index: 999999}
 </style>

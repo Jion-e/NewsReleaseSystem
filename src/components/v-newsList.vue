@@ -1,5 +1,5 @@
 <template lang="html">
-<div class="newslist">
+<div class="newslist" v-loading.fullscreen="isload">
   <h2 class="newsTitle">新闻列表</h2>
 
   <el-form :inline="true" :model="searchData" @submit.prevent="searchNews" class="demo-form-inline">
@@ -91,8 +91,15 @@ export default {
       'newsList',
       'newsItem'
    ]),
+   isload(){
+     if(this.newsList.length > 0){
+       return false
+     }else{
+       return true
+     }
+   }
   },
-  mounted: function () {
+  mounted(){
     this.fetchWebTypes()
     this.fetchNewsList(this.page.size)
   },
@@ -172,14 +179,7 @@ export default {
     view(id){
       this.$router.push({path: '/preview/' + id})
     },
-    // formNewsList(){
-    //   this.newsData = []
-    //   for(let key in this.newsList){
-    //     if(this.newsList[key].is !== "1"){
-    //       this.newsData.push(this.newsList[key])
-    //     }
-    //   }
-    // },
+
     //格式化所属网站
     formatWeb(row){
       const type = parseInt(row.wType);
@@ -196,8 +196,7 @@ export default {
       }
       return typeName;
     }
-  },
-  components: {}
+  }
 }
 </script>
 
