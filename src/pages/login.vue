@@ -21,12 +21,26 @@
 //     margin: 30px 0 10px;
 //   }
 // }
-
 #login{
-
+    // padding-top: 200px;
+    background: url('../assets/img/body_bg.jpg') no-repeat;
+    background-size:cover;
+    box-sizing: border-box;
+    position: relative;
     .el-form{
+      margin: auto;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
       width: 450px;
-      margin-top: 10%;
+      max-height: 300px;
+      background: rgba(255, 255, 255, 0.52);
+    }
+    .login__title{
+      width: 100%;
+      text-align: center;
+      position: absolute;
+      top: 10%;
+      img{width: 50%}
     }
 }
 </style>
@@ -55,9 +69,13 @@
                   @click="login">登录</button>
         </div>
     </form> -->
+    <!-- <h1 class="login__title">新闻发布后台管理系统</h1> -->
+    <h1 class="login__title">
+      <img src="../assets/img/login_text.png" alt="新闻发布后台管理系统" />
+    </h1>
     <el-form :model="userInfo" :rules="loginRules" ref="loginForm" label-position="right" label-width="60px" class="form">
       <div class="form-group">
-        <h1 class="form-header">NEWS ADMIN</h1>
+        <h1 class="form-header">ADMIN</h1>
       <div>
       <el-form-item prop="email" label="账户">
         <el-input v-model="userInfo.email" placeholder="请输入邮箱"></el-input>
@@ -66,7 +84,7 @@
         <el-input type="password" v-model="userInfo.password" placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" class="btn-block"
+        <el-button  type="primary" class="btn-block"
         v-loading.fullscreen="open"
         @click.native.prevent="submit"
         @keyup.enter.native="submit">登录</el-button>
@@ -97,10 +115,16 @@ export default {
           }
         }
     },
-    computed: {
-
+    computed: {},
+    mounted(){
+      this.fullBg()
+      const vm = this
+      $("body").keydown(function() {
+          if (event.keyCode == "13") {
+              vm.submit()
+          }
+      });
     },
-    attached: function() {},
     methods: {
     /**
      * 邮箱密码登录
@@ -120,6 +144,12 @@ export default {
           vm.notice('用户名和密码不匹配')
           vm.open = false
         });
+      },
+      fullBg(){
+        const _width = $(window).width()
+        const _height = $(window).height()
+        $('#login').width(_width)
+        $('#login').height(_height)
       },
       /**
        * 判断用户是否登录

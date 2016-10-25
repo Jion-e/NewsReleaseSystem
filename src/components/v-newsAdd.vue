@@ -158,10 +158,11 @@ export default {
       const editor = new wangEditor('editor-trigger')
       const vm = this
 
-      editor.config.uploadImgUrl = UPLOAD_SERVER;
+      editor.config.uploadImgUrl = UPLOAD_SERVER
       editor.onchange = function () {
          //获取编辑器内容
-         vm.newsData.cont = editor.$txt.html();
+        //  vm.newsData.cont = editor.$txt.html();
+         vm.newsData.cont = $('.wangEditor-txt').html()
       }
       editor.create()
     },

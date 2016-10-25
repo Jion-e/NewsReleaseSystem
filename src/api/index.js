@@ -120,6 +120,7 @@ export default {
      * @param {[Object]} newsItem [新闻详情]
      */
     updateNews(newsItem) {
+      console.log(newsItem);
       newsItemRef(newsItem.id).update(newsItem)
     },
     /**
