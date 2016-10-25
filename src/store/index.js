@@ -7,7 +7,8 @@ Vue.use(Vuex);
 const state = {
     newsItem: {},
     newsList: [],
-    webTypes: [],
+    webTypes: {},
+    moduleTypes: {},
 }
 const mutations = {
     GET_NEWSLIST(state, newsList){ //获取新闻列表
@@ -18,6 +19,9 @@ const mutations = {
     },
     GET_WEBTYPES(state, webTypes){  //获取网站类别
       state.webTypes = webTypes
+    },
+    GET_MODULETYPES(state, moduleTypes){
+      state.moduleTypes = moduleTypes  //获取网站模块
     },
     ADD_NEWS(state, newsItem){   //添加新闻
       state.newsItem = newsItem

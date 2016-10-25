@@ -78,26 +78,20 @@
       "wType" : "1"
     }
   },
-  "webTypes" :{
-    "xyqg": {
-      "wid" : "0",
-      "name" : "信用轻工网"
-    },
-    "gw": {
-      "wid" : "1",
-      "name" : "星数科技官网"
-    }
-  },
-  "moduleTypes" :{
-    "xyqg0": {
-      "wid": "0",
-      "mid": "0",
-      "name": "信用动态"
-    },
-    "xyqg1": {
-      "wid": "0",
-      "mid": "1",
-      "name": "政策法规"
-    }
-  }
+  "webTypes" : [ {
+    "id" : "0",
+    "name" : "信用轻工网"
+  }, {
+    "id" : "1",
+    "name" : "星数科技官网"
+  } ],
+  "moduleTypes" : [{
+    "wid": "0",
+    "mid": "0",
+    "name": "信用动态"
+  },{
+    "wid": "0",
+    "mid": "1",
+    "name": "政策法规"
+  }]
 }
