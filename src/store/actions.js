@@ -2,17 +2,11 @@ import api from '../api'
 import storage from '../api/storage'
 
 export const fetchWebTypes = ({ commit }) => {
-  api.getWebTypes().then(wTypes => {
-      commit('GET_WEBTYPES', wTypes)
+  api.getWebTypes().then(types => {
+      commit('GET_WEBTYPES', types)
   })
 }
 
-export const fetchModuleTypes = ({ commit }, wid) => {
-  api.getModuleTypes(wid).then(mTypes => {
-      // console.log(mTypes)
-      commit('GET_MODULETYPES', mTypes)
-  })
-}
 // export const fetchNewsList = ({ commit }, page, count) => {
 //   api.getNewsList().then(data => {
 //     // console.log('page:'+ data);

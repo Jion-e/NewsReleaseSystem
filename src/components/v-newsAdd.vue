@@ -7,25 +7,11 @@
       </el-form-item>
 
       <el-form-item label="所属网站">
-        <el-select
-        v-model="newsData.wType"
-        placeholder="请选择网站"
-        clearable
-        @change="webTypesChange">
+        <el-select v-model="newsData.wType" placeholder="请选择网站" clearable>
          <el-option
            v-for="item in webTypes"
            :label="item.name"
-           :value="item.wid">
-         </el-option>
-       </el-select>
-      </el-form-item>
-
-      <el-form-item label="所属模块">
-        <el-select v-model="newsData.mType" placeholder="请选择模块" clearable>
-         <el-option
-           v-for="item in moduleTypes"
-           :label="item.name"
-           :value="item.mid">
+           :value="item.id">
          </el-option>
        </el-select>
       </el-form-item>
@@ -96,7 +82,6 @@ export default {
   computed: {
     ...mapGetters([
       'webTypes',
-      'moduleTypes',
       'newsItem'
     ]),
     isload(){
@@ -118,10 +103,9 @@ export default {
           return this.empty
         }
         $('.wangEditor-txt').html(this.newsItem.cont)
-        // console.log(this.newsItem);
         return this.newsItem
       }else {
-        $('.wangEditor-txt').html('')
+        $('.wangEditor-txt').html('<p><br></p>')
         return this.empty
       }
     },
@@ -133,7 +117,6 @@ export default {
   methods: {
     ...mapActions([
       'fetchWebTypes',
-      'fetchModuleTypes',
       'fetchNewsItem',
       'addNews',
       'updateNews',
@@ -141,35 +124,26 @@ export default {
     ]),
     pageInit(){
       const newsID = this.$route.params.id
-
-      //数据初始化，防止v-model初始化时出错
-      this.newsData = this.empty
+      const editor = new wangEditor('editor-trigger')
 
       this.fetchNewsItem(newsID)
       this.fetchWebTypes()
-      this.wangEditorInit()
+      this.wangEditorInit(editor)
 
     },
     /**
      * 富文本编译器初始化
      */
-    wangEditorInit(){
+    wangEditorInit(editor){
       const UPLOAD_SERVER = 'http://localhost:2002/upload'
-      const editor = new wangEditor('editor-trigger')
       const vm = this
 
       editor.config.uploadImgUrl = UPLOAD_SERVER;
       editor.onchange = function () {
          //获取编辑器内容
          vm.newsData.cont = editor.$txt.html();
-      }
-      editor.create()
-    },
-    webTypesChange(){
-      if(this.newsData.wType){
-        this.fetchModuleTypes(this.newsData.wType)
-        this.newsData.mType = ''
-      }
+      };
+      editor.create();
     },
     /**
      * 保存新闻详情
@@ -214,13 +188,6 @@ export default {
        }).then(() => {
          this.clearPage()
        })
-    },
-    clearPage(){
-      // this.newsData = this.empty
-      // console.log(this.newsData);
-      this.$refs.newsForm.resetFields()
-      $('.editor input').val('')
-      $('.wangEditor-txt').html('')
     }
   },
   components: {}
