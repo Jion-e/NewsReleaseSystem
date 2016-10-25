@@ -12,6 +12,7 @@ firebase.initializeApp(config)
 const db = firebase.database().ref()
 const newsListRef = db.child('newsList')
 const webTypesRef = db.child('webTypes')
+const moduleTypesRef = wid => db.child('moduleTypes').orderByChild('wid').equalTo(wid)
 const newsItemRef = newsID => db.child('newsList/' + newsID)
 const newsExistRef = newsListRef.orderByChild('is').equalTo('0')
 const newsWebRef = webType => newsListRef.orderByChild('wType').equalTo(webType)
@@ -45,23 +46,9 @@ const cb = (e, ref, errText) => {
 
 export default {
   /*** 查询事件 ****/
-  // getNewsList() {
-  //     return cb("child_added", newsExistRef, "获取新闻列表失败")
-  //   },
   getNewsList(pageSize) {
       return cb("child_added", newsPageRef(pageSize), "获取新闻列表失败")
     },
-    // getNewsListByPage(page, count) {
-    //   const newsPageRef = newsListRef.orderByChild('is').equalTo('0').limitToFirst(page)
-    //   newsPageRef.on('child_added', snapshot => {
-    //     snapshot.forEach(data => {
-    //       newsListArr.push(data.val())
-    //     })
-    //   }, err => {
-    //     console.log("The read getNewsListByPage failed: " + err.code);
-    //   })
-    //   return newsListArr
-    // },
 
     getNewsListById(newsID) {
       return cb("value", newsItemRef(newsID), "通过新闻序号获取新闻列表失败")
@@ -88,7 +75,21 @@ export default {
         webTypesRef.once('value', snapshot => {
           resolve(snapshot.val())
         }, err => {
-          console.log("获取所属网站列表失败:" + err.code);
+          console.log("获取所属网站列表失败:" + err.code)
+        })
+      })
+    },
+    /**
+     * 获取所属模块列表
+     * @param  {[string]} wid [所属网站id]
+     * @return {[Promise]}     [所属模块列表]
+     */
+    getModuleTypes(wid) {
+      return new Promise(resolve => {
+        moduleTypesRef(wid).once('value', snapshot => {
+          resolve(snapshot.val())
+        }, err => {
+          console.log("获取所属模块列表失败:" + err.code)
         })
       })
     },
@@ -100,7 +101,7 @@ export default {
     getNewsItem(newsID) {
 
       return new Promise(resolve => {
-      newsItemRef(newsID).once('value', snapshot => {
+        newsItemRef(newsID).once('value', snapshot => {
           resolve(snapshot.val())
         }, err => {
           console.log("获取新闻详情失败:" + err.code);

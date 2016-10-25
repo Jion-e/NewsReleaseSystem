@@ -9,11 +9,25 @@
     </el-form-item>
 
     <el-form-item>
-      <el-select v-model="searchData.webType" placeholder="请选择网站" clearable>
+      <el-select
+        v-model="searchData.webType"
+        placeholder="请选择网站"
+        clearable
+        @change="fetchModuleTypes(searchData.webType)">
        <el-option
          v-for="item in webTypes"
          :label="item.name"
-         :value="item.id">
+         :value="item.wid">
+       </el-option>
+     </el-select>
+    </el-form-item>
+
+    <el-form-item>
+      <el-select v-model="searchData.moduleType" placeholder="请选择模块" clearable>
+       <el-option
+         v-for="item in moduleTypes"
+         :label="item.name"
+         :value="item.mid">
        </el-option>
      </el-select>
     </el-form-item>
@@ -80,6 +94,7 @@ export default {
       searchData: {
          text: '',
          webType: '',
+         moduleType: '',
          date: '',
        },
       multipleSelection: [],
@@ -88,6 +103,7 @@ export default {
   computed: {
     ...mapGetters([
       'webTypes',
+      'moduleTypes',
       'newsList',
       'newsItem'
    ]),
@@ -102,10 +118,12 @@ export default {
   mounted(){
     this.fetchWebTypes()
     this.fetchNewsList(this.page.size)
+    // this.fetchModuleTypes('0')
   },
   methods: {
     ...mapActions([
       'fetchWebTypes',
+      'fetchModuleTypes',
       'fetchNewsList',
       'fetchNewsListById',
       'fetchNewsListByDate',
