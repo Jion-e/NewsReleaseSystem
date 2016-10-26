@@ -14,8 +14,8 @@
      <el-menu-item index="/main/newsList"><i class="el-icon-menu"></i>新闻列表</el-menu-item>
      <el-menu-item index="/main/newsAdd"><i class="el-icon-plus"></i>添加新闻</el-menu-item>
      <!-- <el-menu-item index="/"><i class="el-icon-menu"></i>账户注销</el-menu-item> -->
-     <el-menu-item index="2"><i class="el-icon-menu"></i>添加新闻</el-menu-item>
-     <el-menu-item index="2"><i class="el-icon-menu"></i>添加新闻</el-menu-item>
+     <el-menu-item index="/main/webTypeList"><i class="el-icon-setting"></i>关联网站</el-menu-item>
+     <el-menu-item index="/main/webType"><i class="el-icon-menu"></i>添加新闻</el-menu-item>
      <el-menu-item index="2"><i class="el-icon-menu"></i>添加新闻</el-menu-item>
    </el-menu>
 

@@ -11,12 +11,18 @@ firebase.initializeApp(config)
 
 const db = firebase.database().ref()
 const newsListRef = db.child('newsList')
+const newsListDateRef = newsListRef.orderByChild('date')
+
 const webTypesRef = db.child('webTypes')
+const webTypeItemRef = wid => db.child('webTypes/' + wid)
+
 const moduleTypesRef = wid => db.child('moduleTypes').orderByChild('wid').equalTo(wid)
+
 const newsItemRef = newsID => db.child('newsList/' + newsID)
 const newsExistRef = newsListRef.orderByChild('is').equalTo('0')
 const newsWebRef = webType => newsListRef.orderByChild('wType').equalTo(webType)
-const newsPageRef = pageSize => newsListRef.orderByChild('is').equalTo('0').limitToFirst(pageSize)
+// const newsPageRef = page => newsListRef.orderByKey().startAt('' + page.count * (page.page-1)).limitToFirst(page.count)
+// const newsPageRef = page => newsListRef.orderByPriority().startAt('' + page.count * (page.page-1)).endAt('' + page.count * page.page)
 const newsDateRef = date => newsListRef.orderByChild('date').startAt(date.startTime).endAt(date.endTime)
 
 let newsListArr = []
@@ -36,18 +42,22 @@ const cb = (e, ref, errText) => {
     //如果查询节点存在就会执行下面的代码，否则直接返回newsListArr为空
     ref.on(e, snapshot => {
       newsListArr.push(snapshot.val())
+      resolve(newsListArr)
+
+      // console.log(newsListArr)
+      // console.log(prevChildKey);
+      // console.log(snapshot.key);
+
     }, err => {
       console.log(`${errText}:` + err.code);
     })
-
-    resolve(newsListArr)
   })
 }
 
 export default {
   /*** 查询事件 ****/
-  getNewsList(pageSize) {
-      return cb("child_added", newsPageRef(pageSize), "获取新闻列表失败")
+  getNewsList() {
+      return cb("child_added", newsListDateRef, "获取新闻列表失败")
     },
 
     getNewsListById(newsID) {
@@ -99,7 +109,6 @@ export default {
      * @return {[Promise]}        [新闻详情]
      */
     getNewsItem(newsID) {
-
       return new Promise(resolve => {
         newsItemRef(newsID).once('value', snapshot => {
           resolve(snapshot.val())
@@ -133,4 +142,8 @@ export default {
       // })
       newsItemRef(newsID).remove()
     },
+
+    addWebType(wType){
+      webTypeItemRef(wType.wkey).set(wType)
+    }
 }

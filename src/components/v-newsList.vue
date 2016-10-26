@@ -47,13 +47,14 @@
 
   </el-form>
 
-  <el-table :data="newsList" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
+  <el-table :data="newsData" border stripe selection-mode="multiple" @selectionchange="handleSelectionChange">
      <!-- 增加一列显示选择框 -->
     <el-table-column type="selection" width="50"></el-table-column>
     <!-- <el-table-column type="index" width="50"></el-table-column> -->
     <el-table-column property="id" label="编号" width="160" sortable></el-table-column>
-    <el-table-column property="title" label="标题" width="230"></el-table-column>
+    <el-table-column property="title" label="标题" width="230" resizable></el-table-column>
     <el-table-column property="wType" label="所属网站" width="160" :formatter="formatWeb"></el-table-column>
+    <!-- <el-table-column property="mType" label="网站模块" width="160" :formatter="formatModule"></el-table-column> -->
     <el-table-column property="date" label="日期" width="150" sortable></el-table-column>
     <el-table-column align="center" inline-template label="操作" width="200">
       <div class="text-center" v-if="row.id">
@@ -88,8 +89,8 @@ export default {
       page:{
         total: 300,
         current: 1,
-        size: 5,
-        sizes: [5, 10, 15, 20]
+        size: 10,
+        sizes: [10, 20, 30, 40]
       },
       searchData: {
          text: '',
@@ -105,7 +106,8 @@ export default {
       'webTypes',
       'moduleTypes',
       'newsList',
-      'newsItem'
+      'newsItem',
+      'newsData'
    ]),
    isload(){
      if(this.newsList.length > 0){
@@ -113,12 +115,20 @@ export default {
      }else{
        return true
      }
+   },
+   newsData(){
+     const allNews = this.newsList
+
+     //分页处理
+     this.page.total = this.newsList.length
+     const pageNews = allNews.slice(this.page.size * (this.page.current - 1), this.page.size * this.page.current)
+
+     return pageNews
    }
   },
   mounted(){
     this.fetchWebTypes()
-    this.fetchNewsList(this.page.size)
-    // this.fetchModuleTypes('0')
+    this.fetchNewsList()
   },
   methods: {
     ...mapActions([
@@ -137,12 +147,12 @@ export default {
     },
     //每页条数
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-      this.fetchNewsList(parseInt(val))
+      // console.log(`每页 ${val} 条`)
+      this.page.size = parseInt(val)
     },
     //当前页
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      this.page.current = parseInt(val)
     },
     //搜索
     searchNews() {

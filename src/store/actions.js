@@ -20,8 +20,8 @@ export const fetchModuleTypes = ({ commit }, wid) => {
 //   })
 // }
 //
-export const fetchNewsList = ({ commit }, pageSize) => {
-  api.getNewsList(pageSize).then(data => {
+export const fetchNewsList = ({ commit }, page) => {
+  api.getNewsList(page).then(data => {
     // console.log('page:'+ data);
     commit('GET_NEWSLIST', data)
   })
@@ -72,4 +72,8 @@ export const deleteNews = ({ commit }, newsID) => {
 
 export const uploadImg = ({ commit }) => {
   storage.uploadImage()
+}
+
+export const addWebType = ({ commit }, wType) => {
+  api.addWebType(wType)
 }

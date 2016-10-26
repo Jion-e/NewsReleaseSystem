@@ -73,7 +73,7 @@
     <h1 class="login__title">
       <img src="../assets/img/login_text.png" alt="新闻发布后台管理系统" />
     </h1>
-    <el-form :model="userInfo" :rules="loginRules" ref="loginForm" label-position="right" label-width="60px" class="form">
+    <el-form :model="userInfo" :rules="loginRules" ref="loginForm" label-position="left" label-width="60px" class="form">
       <div class="form-group">
         <h1 class="form-header">ADMIN</h1>
       <div>
