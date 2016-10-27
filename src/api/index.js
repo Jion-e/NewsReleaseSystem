@@ -11,7 +11,7 @@ firebase.initializeApp(config)
 
 const db = firebase.database().ref()
 const newsListRef = db.child('newsList')
-const newsListDateRef = newsListRef.orderByChild('date')
+const newsListTimeRef = newsListRef.orderByChild('createTime')
 
 const webTypesRef = db.child('webTypes')
 const webTypeItemRef = wid => db.child('webTypes/' + wid)
@@ -57,7 +57,7 @@ const cb = (e, ref, errText) => {
 export default {
   /*** 查询事件 ****/
   getNewsList() {
-      return cb("child_added", newsListDateRef, "获取新闻列表失败")
+      return cb("child_added", newsListTimeRef, "获取新闻列表失败")
     },
 
     getNewsListById(newsID) {
@@ -98,6 +98,7 @@ export default {
       return new Promise(resolve => {
         moduleTypesRef(wid).once('value', snapshot => {
           resolve(snapshot.val())
+          console.log(snapshot.val());
         }, err => {
           console.log("获取所属模块列表失败:" + err.code)
         })

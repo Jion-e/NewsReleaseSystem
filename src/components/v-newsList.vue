@@ -117,7 +117,14 @@ export default {
      }
    },
    newsData(){
-     const allNews = this.newsList
+     //对生产时间进行排序
+     const allNews = this.newsList.sort((a, b) => {
+        const tiem1 = moment(a.creatTime).format("YYYYMMDDHHmmss")
+        const tiem2 = moment(b.creatTime).format("YYYYMMDDHHmmss")
+        return tiem2 - tiem1
+    })
+
+    // console.log(allNews);
 
      //分页处理
      this.page.total = this.newsList.length
