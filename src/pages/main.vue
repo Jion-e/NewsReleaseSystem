@@ -19,16 +19,14 @@ import vHeader from '../components/v-header.vue'
 import vSidebar from '../components/v-sidebar.vue'
 export default {
     data() {
-            return {};
-        },
-        computed: {},
-        ready() {},
-        attached() {},
-        methods: {},
-        components: {
-          vHeader,
-          vSidebar
-        }
+      return {};
+    },
+    computed: {},
+    methods: {},
+    components: {
+      vHeader,
+      vSidebar
+    }
 };
 
 </script>

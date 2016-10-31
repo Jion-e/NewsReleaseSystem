@@ -41,7 +41,7 @@ import { mapGetters, mapActions } from 'vuex'
         'fetchModuleTypes'
       ]),
       view(wid){
-
+        
       },
       addWebType(){
         this.$router.push({path: 'WebTypeAdd'})

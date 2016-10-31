@@ -2,7 +2,7 @@
 <div class="newslist" v-loading.fullscreen="isload">
   <h2 class="newsTitle">新闻列表</h2>
 
-  <el-form :inline="true" :model="searchData" @submit.prevent="searchNews" class="demo-form-inline">
+  <el-form :inline="true" :model="searchData" class="demo-form-inline">
 
     <el-form-item>
       <el-input v-model="searchData.text" placeholder="请输入关键字"></el-input>
@@ -22,7 +22,7 @@
      </el-select>
     </el-form-item>
 
-    <el-form-item>
+    <!-- <el-form-item>
       <el-select v-model="searchData.moduleType" placeholder="请选择模块" clearable>
        <el-option
          v-for="item in moduleTypes"
@@ -30,7 +30,7 @@
          :value="item.mid">
        </el-option>
      </el-select>
-    </el-form-item>
+    </el-form-item> -->
 
     <el-date-picker
       v-model="searchData.date"
@@ -172,23 +172,27 @@ export default {
         return false
       }
 
-      if(date){
-        const startTime = moment(date[0]).format('YYYY-MM-DD')
-        const endTime = moment(date[1]).format('YYYY-MM-DD')
-        const queryDate = {startTime, endTime}
-        this.fetchNewsListByDate(queryDate)
-      }
-
       if(text){
         //输入的是正整数
         if(/^[1-9]\d*$/.test(text)){
           this.fetchNewsListById(text)
+          return false
         }
       }
 
       if(webType){
         this.fetchNewsListByWeb(webType)
+        return false
       }
+
+      if(date){
+        const startTime = moment(date[0]).format('YYYY-MM-DD')
+        const endTime = moment(date[1]).format('YYYY-MM-DD')
+        const queryDate = {startTime, endTime}
+        this.fetchNewsListByDate(queryDate)
+        return false
+      }
+
     },
     //编辑新闻
     edit(id){

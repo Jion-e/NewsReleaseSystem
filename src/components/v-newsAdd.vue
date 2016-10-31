@@ -49,7 +49,7 @@
       </el-form-item>
 
       <el-form-item label="内容编辑">
-        <textarea id="editor-trigger"  style="height:400px;max-height:500px;">
+        <textarea id="editor-trigger"  style="height:400px;max-height:500px">
             <p>请输入内容...</p>
         </textarea>
       </el-form-item>
@@ -62,7 +62,9 @@
         <el-button @click.native.prevent="reset">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <p>
+      {{newsData}}
+    </p>
   </div>
 </template>
 
@@ -117,8 +119,17 @@ export default {
         if(this.webTypes.length == 0){
           return this.empty
         }
+        if(this.moduleTypes.length == 0){
+          return this.empty
+        }
+        // if(this.newsItem.wType == undefined){
+        //   return this.empty
+        // }
+        // if(this.newsItem.mType == undefined){
+        //   return this.empty
+        // }
         $('.wangEditor-txt').html(this.newsItem.cont)
-        // console.log(this.newsItem);
+        console.log(this.newsItem)
         return this.newsItem
       }else {
         $('.wangEditor-txt').html('')
@@ -126,6 +137,9 @@ export default {
       }
     },
 
+  },
+  created(){
+    // this.pageInit()
   },
   mounted (){
     this.pageInit()
@@ -145,8 +159,9 @@ export default {
       //数据初始化，防止v-model初始化时出错
       this.newsData = this.empty
 
-      this.fetchNewsItem(newsID)
       this.fetchWebTypes()
+      console.log(this.moduleTypes);
+      this.fetchNewsItem(newsID)
       this.wangEditorInit()
 
     },
@@ -154,7 +169,7 @@ export default {
      * 富文本编译器初始化
      */
     wangEditorInit(){
-      const UPLOAD_SERVER = 'http://localhost:2002/upload'
+      const UPLOAD_SERVER = 'http://testadmin.chinaeid.org:2002/upload'
       const editor = new wangEditor('editor-trigger')
       const vm = this
 
@@ -217,11 +232,11 @@ export default {
        })
     },
     clearPage(){
-      // this.newsData = this.empty
+      this.newsData = this.empty
       // console.log(this.newsData);
-      this.$refs.newsForm.resetFields()
-      $('.editor input').val('')
-      $('.wangEditor-txt').html('')
+      // this.$refs.newsForm.resetFields()
+      // $('.editor input').val('')
+      // $('.wangEditor-txt').html('')
     }
   },
   components: {}

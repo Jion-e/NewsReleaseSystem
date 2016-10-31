@@ -1,26 +1,4 @@
 <style lang="less">
-// @import "../assets/css/myToggle.less";
-// #login{
-//   position: fixed;
-//   top:50%;
-//   left: 0;
-//   width: 100%;
-//   margin-top: -250px;
-//   .form{
-//     width: 500px;
-//   }
-//   .form-group{
-//     width: 90%;
-//     margin-left: auto;
-//     margin-right: auto;
-//   }
-//   .form-label{
-//     text-align: left;
-//   }
-//   .btn-block{
-//     margin: 30px 0 10px;
-//   }
-// }
 #login{
     // padding-top: 200px;
     background: url('../assets/img/body_bg.jpg') no-repeat;
@@ -48,28 +26,6 @@
 <template lang="html">
 
 <div id="login">
-    <!-- <form class="form"  method="post">
-        <div class="form-group">
-          <h1 class="form-header">NEWS ADMIN</h1>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="username">账号：</label>
-            <input class="form-control" type="text" name="username" id="username" placeholder="请输入账号" v-model="userInfo.email">
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="password">密码：</label>
-            <input class="form-control" type="password" name="password" id="password" placeholder="请输入密码">
-        </div>
-        <div class="form-group">
-          <label class="form-label"><input type="checkbox" name="remember">记住我</label>
-          <a class="btn-link fl-right" href="javascript:;">忘记密码？</a>
-        </div>
-        <div class="form-group">
-          <button class="btn-radius btn-block btn-default waves-effect" type="button" name="submit"
-                  @click="login">登录</button>
-        </div>
-    </form> -->
-    <!-- <h1 class="login__title">新闻发布后台管理系统</h1> -->
     <h1 class="login__title">
       <img src="../assets/img/login_text.png" alt="新闻发布后台管理系统" />
     </h1>

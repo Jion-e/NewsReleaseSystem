@@ -9,7 +9,9 @@ var uploadfoldername = 'uploadfiles';
 var uploadfolderpath = path.join(__dirname, uploadfoldername);
 
 // var server = '192.168.1.2';
-var server = 'localhost';
+// var server = 'localhost';
+var server = '127.0.0.1';
+var backImg = 'testadmin.chinaeid.org'
 var port = 2002;
 
 http.createServer(function (req, res) {
@@ -102,7 +104,7 @@ http.createServer(function (req, res) {
                         // 保存成功
                         console.log('fs.rename done');
                         // 拼接图片url地址
-                        result = 'http://' + server + ':' + port + '/' + uploadfoldername + '/' + filename;
+                        result = 'http://' + backImg + ':' + port + '/' + uploadfoldername + '/' + filename;
                     }
 
                     // 返回结果

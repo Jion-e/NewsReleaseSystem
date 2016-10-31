@@ -30,12 +30,12 @@
         <el-button @click.native.prevent="addDomain">新增模块</el-button>
       </el-form-item>
     </el-form>
-    <p>
+    <!-- <p>
       {{webAdd}}
     </p>
     <p>
       {{webTypesArr.length}}
-    </p>
+    </p> -->
   </div>
 </template>
 

@@ -4,12 +4,12 @@
 ## Development
 
 ```shell
-npm run dev
+cooking watch
 ```
 
 ## Production
 ```
-npm run dist
+cooking build
 ```
 
 ## License
